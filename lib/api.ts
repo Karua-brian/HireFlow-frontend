@@ -1,7 +1,7 @@
 // API Helper functions for interacting with the Hireflow API
 
 // Base URL for the API, taken from environment variables
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hireflow.space"; 
+const API_BASE_URL = "https://api.hireflow.space"; 
 
 if (!process.env.NEXT_PUBLIC_API_URL) {
   console.warn("Warning: NEXT_PUBLIC_API_URL is not set. Using default API URL.");
