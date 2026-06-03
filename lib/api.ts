@@ -1,7 +1,11 @@
 // API Helper functions for interacting with the Hireflow API
 
 // Base URL for the API, taken from environment variables
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.hireflow.space"; 
+
+if (!process.env.NEXT_PUBLIC_API_URL) {
+  console.warn("Warning: NEXT_PUBLIC_API_URL is not set. Using default API URL.");
+}
 
 // Function to register a new user
 export async function register(email: string, password: string) { 
@@ -67,4 +71,14 @@ export async function applyToJob(token: string, jobId: string) {
   }
 
   return response.json();
+}
+
+// Function to get the current authentication token from localStorage
+export function getToken() {
+  return localStorage.getItem("token"); // Retrieve the token from localStorage, or return null if it doesn't exist
+}
+
+// Function to log out the user by clearing the authentication token from localStorage
+export function logout() {
+  localStorage.removeItem("token"); // Remove the token from localStorage to log out the user
 }
