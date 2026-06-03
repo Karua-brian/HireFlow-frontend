@@ -1,7 +1,7 @@
 // API Helper functions for interacting with the Hireflow API
 
 // Base URL for the API, taken from environment variables
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.hireflow.space';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 // Function to register a new user
 export async function register(email: string, password: string) { 

@@ -7,6 +7,7 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
             HireFlow
           </h1>
+          
           <div className="flex gap-4">
             <a
               href="/login"
@@ -20,6 +21,7 @@ export default function Home() {
             >
               Register
             </a>
+            
           </div>
         </div>
       </nav>
@@ -47,6 +49,7 @@ export default function Home() {
             >
               Sign In
             </a>
+            
           </div>
 
           {/* Features Grid */}
