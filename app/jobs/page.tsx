@@ -5,11 +5,11 @@ import { useState, useEffect } from 'react';
 interface Job {
   id: string;
   title: string;
-  company: string;
-  location: string;
-  salary: string;
   description: string;
-  postedAt: string;
+  company: string;
+  location?: string;
+  salary?: string;
+  postedAt?: string;
 }
 
 export default function JobsPage() {
@@ -26,9 +26,9 @@ export default function JobsPage() {
   useEffect(() => {
     const filtered = jobs.filter(
       (job) =>
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.location.toLowerCase().includes(searchTerm.toLowerCase())
+        job.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.location?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredJobs(filtered);
   }, [searchTerm, jobs]);
@@ -39,7 +39,7 @@ export default function JobsPage() {
       const response = await fetch('https://api.hireflow.space/jobs');
       if (!response.ok) throw new Error('Failed to fetch jobs');
       const data = await response.json();
-      setJobs(data || []);
+      setJobs(data.data.jobs || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
