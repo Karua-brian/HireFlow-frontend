@@ -82,3 +82,46 @@ export function getToken() {
 export function logout() {
   localStorage.removeItem("token"); // Remove the token from localStorage to log out the user
 }
+
+// Function to submit a recruiter request
+export async function submitRecruiterRequest(
+  token: string,
+  companyName: string,
+  companyWebsite: string,
+  message: string
+) {
+  const response = await fetch(`${API_BASE_URL}/recruiter/request`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      company_name: companyName,
+      company_website: companyWebsite,
+      message,
+    }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.message || "Failed to submit recruiter request");
+  }
+
+  return response.json();
+}
+
+// Function to get recruiter request status
+export async function getRecruiterRequestStatus(token: string) {
+  const response = await fetch(`${API_BASE_URL}/recruiter/request`, {
+    method: "GET",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.message || "Failed to fetch request status");
+  }
+
+  return response.json();
+}
