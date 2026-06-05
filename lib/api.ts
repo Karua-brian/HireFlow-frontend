@@ -41,9 +41,13 @@ export async function login(email: string, password: string) {
   }
 
   const data = await response.json();
-  if (data.token) {
-    localStorage.setItem("token", data.token); // Store the authentication token in localStorage for later use
+
+  const token = data.token || data.data?.token; // Handle different possible response structures for the token
+  if (!token) {
+    throw new Error("No token returned from backend"); // If no token is found in the response, throw an error
   }
+
+  localStorage.setItem("token", data.token); // Store the authentication token in localStorage for later use
 
   return data; // Return the parsed JSON data from the response, which may include user information and the authentication token
 }
