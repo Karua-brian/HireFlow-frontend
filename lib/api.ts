@@ -98,7 +98,7 @@ export async function submitRecruiterRequest(
   companyWebsite: string,
   message: string
 ) {
-  const response = await fetch(`${API_BASE_URL}/recruiter/request`, {
+  const response = await fetch(`${API_BASE_URL}/recruiter/requests`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
