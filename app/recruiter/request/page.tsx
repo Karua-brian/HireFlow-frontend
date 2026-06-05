@@ -29,10 +29,7 @@ export default function RecruiterRequestPage() {
 
       await submitRecruiterRequest(token, companyName, companyWebsite, message);
       setSubmitted(true);
-      
-      setTimeout(() => {
-        router.push("/recruiter/status");
-      }, 2000);
+      router.push("/recruiter/status"); // Redirect to status page after successful submission
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {

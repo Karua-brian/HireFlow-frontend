@@ -37,6 +37,7 @@ export async function login(email: string, password: string) {
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
+    localStorage.setItem("token", data.token); // Clear any existing token from localStorage if login fails
     throw new Error(data.message || "Login failed");
   }
 
