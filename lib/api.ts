@@ -81,16 +81,6 @@ export async function applyToJob(token: string, jobId: string) {
   return response.json();
 }
 
-// Function to get the current authentication token from localStorage
-export function getToken() {
-  return localStorage.getItem("token"); // Retrieve the token from localStorage, or return null if it doesn't exist
-}
-
-// Function to log out the user by clearing the authentication token from localStorage
-export function logout() {
-  localStorage.removeItem("token"); // Remove the token from localStorage to log out the user
-}
-
 // Function to submit a recruiter request
 export async function submitRecruiterRequest(
   token: string,
@@ -125,7 +115,7 @@ export async function submitRecruiterRequest(
 
 // Function to get recruiter request status
 export async function getRecruiterRequestStatus(token: string) {
-  const response = await fetch(`${API_BASE_URL}/recruiter/status`, {
+  const response = await fetch(`${API_BASE_URL}/recruiter/requests/me`, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -136,4 +126,14 @@ export async function getRecruiterRequestStatus(token: string) {
   }
 
   return response.json();
+}
+
+// Function to get the current authentication token from localStorage
+export function getToken() {
+  return localStorage.getItem("token"); // Retrieve the token from localStorage, or return null if it doesn't exist
+}
+
+// Function to log out the user by clearing the authentication token from localStorage
+export function logout() {
+  localStorage.removeItem("token"); // Remove the token from localStorage to log out the user
 }
