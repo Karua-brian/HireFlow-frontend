@@ -13,6 +13,8 @@ export default function RecruiterRequestPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+
+// Function to log in a user, returns an authentication token on success
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
