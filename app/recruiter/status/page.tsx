@@ -11,7 +11,7 @@ interface StatusResponse {
   reason?: string;
 }
 
-// Component to display the status of a recruiter's request to become a recruiter
+//
 export default function RecruiterStatusPage() {
   const router = useRouter();
   const [status, setStatus] = useState<RequestStatus>(null);

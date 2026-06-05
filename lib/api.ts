@@ -58,12 +58,13 @@ export async function fetchJobs(token: string) { // Accept an authentication tok
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    throw new Error(data.message || "Failed to fetch jobs");
+    const res = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+    throw new Error(res?.error?.message || "Failed to fetch jobs");
   }
 
-  return response.json();
+  return res.data;
 }
 
 // Function to apply to a job, requires an authentication token and the job ID
@@ -72,13 +73,14 @@ export async function applyToJob(token: string, jobId: string) {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
   });
+  
+    const resp = await response.json().catch(() => ({}));
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    throw new Error(data.message || "Failed to apply to job");
+    if (!response.ok) {
+    throw new Error(resp?.error?.message || "Failed to apply to job");
   }
 
-  return response.json();
+  return resp.data;
 }
 
 // Function to submit a recruiter request
@@ -101,16 +103,20 @@ export async function submitRecruiterRequest(
     }),
   });
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
+    const resp = await response.json().catch(() => ({}));
   
+  if (!response.ok) {
     if (response.status === 401) { // If the response status is 401 Unauthorized, throw a specific error message
       throw new Error("Unauthorized. Please log in again.");
     }
-    throw new Error(data.message || "Failed to submit recruiter request");
+
+    if (response.status === 409) {
+      throw new Error("Already submitted recruiter access request")
+    }
+    throw new Error(resp?.error.message || "Failed to submit recruiter request");
   }
 
-  return response.json();
+  return resp.data();
 }
 
 // Function to get recruiter request status
@@ -120,12 +126,13 @@ export async function getRecruiterRequestStatus(token: string) {
     headers: { Authorization: `Bearer ${token}` },
   });
 
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    throw new Error(data.message || "Failed to fetch request status");
+    const res = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+    throw new Error(res?.error?.message || "Failed to fetch request status");
   }
 
-  return response.json();
+  return res.data;
 }
 
 // Function to get the current authentication token from localStorage
