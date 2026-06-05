@@ -92,7 +92,7 @@ export default function LoginPage() {
           <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
             Don't have an account?{" "}
             <a
-              href="/register"
+              href="/register" // redirect to register page
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
               Register here
