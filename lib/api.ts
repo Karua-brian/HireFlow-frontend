@@ -108,9 +108,12 @@ export async function submitRecruiterRequest(
     if (response.status === 401) { // If the response status is 401 Unauthorized, throw a specific error message
       throw new Error("Unauthorized. Please log in again.");
     }
-
     if (response.status === 409) {
-      throw new Error("Already submitted recruiter request")
+      throw new Error("Already submitted request!!")
+    }
+
+    if (response.statusText === "pending") {
+      throw new Error("Pending Admin response")
     }
     throw new Error(data.message || "Failed to submit recruiter request");
   }
