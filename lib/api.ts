@@ -112,7 +112,7 @@ export async function submitRecruiterRequest(
     if (response.status === 409) {
       throw new Error("Already submitted recruiter request")
     }
-    throw new Error(data?.error.message || "Failed to submit recruiter request");
+    throw new Error(data.message || "Failed to submit recruiter request");
   }
 
   return response.json();
