@@ -27,7 +27,7 @@ export default function RecruiterRequestPage() {
         return;
       }
 
-      await submitRecruiterRequest(token, companyName, companyWebsite, message);
+      await submitRecruiterRequest(token, companyName, companyWebsite, message); // Wait for request success
       setSubmitted(true);
       router.push("/recruiter/status"); // Redirect to status page after successful submission
     } catch (err) {
@@ -35,7 +35,7 @@ export default function RecruiterRequestPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }; 
 
   if (submitted) {
     return (
