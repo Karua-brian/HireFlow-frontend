@@ -163,7 +163,7 @@ export default function RecruiterRequestPage() {
           <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
             Want to check your status?{" "}
             <a
-              href="/recruiter/status"
+              href="/recruiter/status" // redirect to status page
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
               View status
