@@ -29,7 +29,7 @@ export default function RecruiterRequestPage() {
 
       await submitRecruiterRequest(token, companyName, companyWebsite, message);
       setSubmitted(true);
-      router.push("/recruiter/requests/me"); // Redirect to status page after successful submission
+      router.push("/recruiter/status"); // Redirect to status page after successful submission
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -163,7 +163,7 @@ export default function RecruiterRequestPage() {
           <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
             Want to check your status?{" "}
             <a
-              href="/recruiter/requests/me"
+              href="/recruiter/status"
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
               View status
