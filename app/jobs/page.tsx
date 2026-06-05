@@ -82,6 +82,21 @@ export default function JobsPage() {
             </svg>
           </div>
         </div>
+         {/* Recruiter CTA */}
+        <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Want to post jobs?</h3>
+              <p className="text-gray-600 dark:text-gray-400">Become a recruiter and start hiring top talent on HireFlow.</p>
+            </div>
+            <a
+              href="/recruiter/request"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold whitespace-nowrap transition-colors inline-block"
+            >
+              → Become a Recruiter
+            </a>
+          </div>
+        </div>
 
         {/* Error State */}
         {error && (
