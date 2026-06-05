@@ -35,21 +35,20 @@ export async function login(email: string, password: string) {
     body: JSON.stringify({ email, password }),
   });
 
+  const res = await response.json();  // Attempt to parse the response as JSON, but if it fails, use an empty object
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    throw new Error(data.message || "Login failed");
+    throw new Error(res?.error?.message || "Login failed");
   }
 
-  const data = await response.json();
-
-  const token = data.token || data.data?.token; // Handle different possible response structures for the token
+  const token = res.data?.access_token;
   if (!token) {
+    console.log("Response from backend:", res); // Log the full response for debugging purposes
     throw new Error("No token returned from backend"); // If no token is found in the response, throw an error
   }
 
-  localStorage.setItem("token", data.token); // Store the authentication token in localStorage for later use
+  localStorage.setItem("token", token); // Store the authentication token in localStorage for later use
 
-  return data; // Return the parsed JSON data from the response, which may include user information and the authentication token
+  return res; // Return the parsed JSON data from the response, which may include user information and the authentication token
 }
 
 // Function to fetch job listings, requires an authentication token
