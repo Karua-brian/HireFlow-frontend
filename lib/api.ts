@@ -107,7 +107,7 @@ export async function submitRecruiterRequest(
     body: JSON.stringify({
       company_name: companyName,
       company_website: companyWebsite,
-      message,
+      message: message,
     }),
   });
 
@@ -125,7 +125,7 @@ export async function submitRecruiterRequest(
 
 // Function to get recruiter request status
 export async function getRecruiterRequestStatus(token: string) {
-  const response = await fetch(`${API_BASE_URL}/recruiter/request`, {
+  const response = await fetch(`${API_BASE_URL}/recruiter/status`, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   });

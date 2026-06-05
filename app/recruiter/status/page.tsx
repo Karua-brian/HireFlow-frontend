@@ -24,7 +24,6 @@ export default function RecruiterStatusPage() {
         const token = getToken();
         if (!token) {
           setError("You must be logged in to view your request status");
-          router.push("/login");
           return;
         }
 
