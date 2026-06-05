@@ -103,20 +103,19 @@ export async function submitRecruiterRequest(
     }),
   });
 
-    const resp = await response.json().catch(() => ({}));
-  
-  if (!response.ok) {
+   if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
     if (response.status === 401) { // If the response status is 401 Unauthorized, throw a specific error message
       throw new Error("Unauthorized. Please log in again.");
     }
 
     if (response.status === 409) {
-      throw new Error("Already submitted recruiter access request")
+      throw new Error("Already submitted recruiter request")
     }
-    throw new Error(resp?.error.message || "Failed to submit recruiter request");
+    throw new Error(data?.error.message || "Failed to submit recruiter request");
   }
 
-  return resp.data();
+  return response.json();
 }
 
 // Function to get recruiter request status
