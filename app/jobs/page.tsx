@@ -7,9 +7,9 @@ interface Job {
   title: string;
   description: string;
   company: string;
-  location?: string;
-  salary?: string;
-  postedAt?: string;
+  location: string;
+  salary: string;
+  createdAt: string;
 }
 
 export default function JobsPage() {
@@ -55,8 +55,8 @@ export default function JobsPage() {
           <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">HireFlow</h1>
           <button
             onClick={() => {
-              localStorage.removeItem('token');
-              window.location.href = '/login';
+              localStorage.removeItem('token'); // Remove the authentication token from localStorage to log out the user
+              window.location.href = '/login'; // Redirect to the login page after logging out
             }}
             className="px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium transition-colors"
           >
@@ -135,7 +135,7 @@ export default function JobsPage() {
                 </p>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500 dark:text-gray-400">{job.postedAt}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{job.createdAt}</span>
                   <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium text-sm transition-colors">
                     View Job
                   </button>
