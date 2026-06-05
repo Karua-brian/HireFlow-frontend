@@ -23,8 +23,7 @@ export default function RecruiterRequestPage() {
     try {
       const token = getToken();
       if (!token) {
-        setError("You must be logged in to submit a recruiter request");
-        router.push("/login");
+        setError("Authentication token not found. Please log in again.");
         return;
       }
 

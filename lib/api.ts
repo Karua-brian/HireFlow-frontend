@@ -105,6 +105,10 @@ export async function submitRecruiterRequest(
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
+  
+    if (response.status === 401) { // If the response status is 401 Unauthorized, throw a specific error message
+      throw new Error("Unauthorized. Please log in again.");
+    }
     throw new Error(data.message || "Failed to submit recruiter request");
   }
 
