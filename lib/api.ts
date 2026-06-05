@@ -37,11 +37,15 @@ export async function login(email: string, password: string) {
 
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
-    localStorage.setItem("token", data.token); // Clear any existing token from localStorage if login fails
     throw new Error(data.message || "Login failed");
   }
 
-  return response.json();
+  const data = await response.json();
+  if (data.token) {
+    localStorage.setItem("token", data.token); // Store the authentication token in localStorage for later use
+  }
+
+  return data; // Return the parsed JSON data from the response, which may include user information and the authentication token
 }
 
 // Function to fetch job listings, requires an authentication token
