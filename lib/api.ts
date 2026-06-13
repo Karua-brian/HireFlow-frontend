@@ -58,8 +58,8 @@ export async function login(email: string, password: string) {
     throw new Error("No token returned from backend");
   }
 
-  localStorage.setItem("token", token);
-  return res;
+  localStorage.setItem("user", JSON.stringify(res.user));
+  return res.data;
 }
 
 /* -----------------------------
@@ -245,4 +245,21 @@ export function getToken() {
 
 export function logout() {
   localStorage.removeItem("token");
+}
+
+// -----------------------------------
+export function getCurrentUser() {
+  const user = localStorage.getItem("user");
+
+  if (!user) return null;
+
+  return JSON.parse(user);
+}
+
+export function isAdmin() {
+  return getCurrentUser()?.role === "admin";
+}
+
+export function isRecruiter() {
+  return getCurrentUser()?.role === "recruiter";
 }

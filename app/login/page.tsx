@@ -18,13 +18,11 @@ export default function LoginPage() {
 
   const result = await loginUser(email, password);
 
-  const payload = JSON.parse(
-    atob(result.access_token.split(".")[1])
-  );
+  const role = result.user.role
 
-  if (payload.role === "admin") {
+  if (role === "admin") {
     router.push("/admin/recruiter-requests");
-  } else if (payload.role === "recruiter") {
+  } else if (role === "recruiter") {
     router.push("/jobs/create");
   } else {
     router.push("/jobs");
