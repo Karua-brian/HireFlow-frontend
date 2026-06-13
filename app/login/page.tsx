@@ -16,15 +16,20 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    try {
-      await loginUser(email, password);
-      router.push("/jobs"); // Redirect to jobs page on successful login
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const result = await loginUser(email, password);
+
+  const payload = JSON.parse(
+    atob(result.access_token.split(".")[1])
+  );
+
+  if (payload.role === "/admin/recruiter-requests") {
+    router.push("/admin");
+  } else if (payload.role === "recruiter") {
+    router.push("/jobs/create");
+  } else {
+    router.push("/jobs");
+  }
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 px-4">

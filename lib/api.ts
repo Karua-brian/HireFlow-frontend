@@ -1,89 +1,105 @@
-// API Helper functions for interacting with the Hireflow API
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// Base URL for the API, taken from environment variables
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL; 
-
-if (!process.env.NEXT_PUBLIC_API_URL) {
-  console.warn("Warning: NEXT_PUBLIC_API_URL is not set. Using default API URL.");
+if (!API_BASE_URL) {
+  console.warn("NEXT_PUBLIC_API_URL is not set.");
 }
 
-// Function to register a new user
-export async function register(email: string, password: string) { 
-  const response = await fetch(`${API_BASE_URL}/register`, { 
-    method: "POST", 
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }), // Send email and password in the request body as JSON
-  });
+/* -----------------------------
+   Shared helpers
+------------------------------*/
 
-  if (!response.ok) { // If the response is not OK, attempt to parse the error message from the response
-    const data = await response.json().catch(() => ({})); // Attempt to parse the response as JSON, but if it fails, use an empty object
-    throw new Error(data.message || "Registration failed"); // Throw an error with the message from the response, or a generic message if parsing fails
-  }
-
-  return response.json(); // If the response is OK, parse and return the JSON data from the response
+function extractError(res: any, fallback: string) {
+  return (
+    res?.error?.message ||
+    res?.message ||
+    fallback
+  );
 }
 
-// Function to log in an existing user
-export async function login(email: string, password: string) {
-  const response = await fetch(`${API_BASE_URL}/login`, {
+async function safeJson(response: Response) {
+  return response.json().catch(() => ({}));
+}
+
+/* -----------------------------
+   AUTH
+------------------------------*/
+
+export async function register(email: string, password: string) {
+  const response = await fetch(`${API_BASE_URL}/register`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
 
-  const res = await response.json();  // Attempt to parse the response as JSON, but if it fails, use an empty object
+  const res = await safeJson(response);
+
   if (!response.ok) {
-    throw new Error(res?.error?.message || "Login failed");
+    throw new Error(extractError(res, "Registration failed"));
   }
 
-  const token = res.data?.access_token;
-  if (!token) {
-    console.log("Response from backend:", res); // Log the full response for debugging purposes
-    throw new Error("No token returned from backend"); // If no token is found in the response, throw an error
-  }
-
-  localStorage.setItem("token", token); // Store the authentication token in localStorage for later use
-
-  return res; // Return the parsed JSON data from the response, which may include user information and the authentication token
+  return res;
 }
 
-// Function to fetch job listings, requires an authentication token
-export async function fetchJobs(token: string) { // Accept an authentication token as a parameter
+export async function login(email: string, password: string) {
+  const response = await fetch(`${API_BASE_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const res = await safeJson(response);
+
+  if (!response.ok) {
+    throw new Error(extractError(res, "Login failed"));
+  }
+
+  const token = res?.data?.access_token;
+  if (!token) {
+    throw new Error("No token returned from backend");
+  }
+
+  localStorage.setItem("token", token);
+  return res;
+}
+
+/* -----------------------------
+   JOBS
+------------------------------*/
+
+export async function fetchJobs(token: string) {
   const response = await fetch(`${API_BASE_URL}/jobs`, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   });
 
-    const res = await response.json().catch(() => ({}));
+  const res = await safeJson(response);
 
-    if (!response.ok) {
-    throw new Error(res?.error?.message || "Failed to fetch jobs");
+  if (!response.ok) {
+    throw new Error(extractError(res, "Failed to fetch jobs"));
   }
 
   return res.data;
 }
 
-// Function to apply to a job, requires an authentication token and the job ID
 export async function applyToJob(token: string, jobId: string) {
   const response = await fetch(`${API_BASE_URL}/jobs/${jobId}/apply`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
   });
-  
-    const resp = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-    throw new Error(resp?.error?.message || "Failed to apply to job");
+  const res = await safeJson(response);
+
+  if (!response.ok) {
+    throw new Error(extractError(res, "Failed to apply to job"));
   }
 
-  return resp.data;
+  return res.data;
 }
 
-// Function to submit a recruiter request
+/* -----------------------------
+   RECRUITER REQUEST FLOW
+------------------------------*/
+
 export async function submitRecruiterRequest(
   token: string,
   companyName: string,
@@ -99,50 +115,134 @@ export async function submitRecruiterRequest(
     body: JSON.stringify({
       company_name: companyName,
       company_website: companyWebsite,
-      message: message,
+      message,
     }),
   });
 
-   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    if (response.status === 401) { // If the response status is 401 Unauthorized, throw a specific error message
+  const res = await safeJson(response);
+
+  if (!response.ok) {
+    if (response.status === 401) {
       throw new Error("Unauthorized. Please log in again.");
     }
+
     if (response.status === 409) {
-      throw new Error("Already submitted request!!")
+      throw new Error("You already submitted a recruiter request.");
     }
 
-    if (response.statusText === "pending") {
-      throw new Error("Pending Admin response")
-    }
-    throw new Error(data.message || "Failed to submit recruiter request");
+    throw new Error(extractError(res, "Failed to submit recruiter request"));
   }
 
-  return response.json();
+  return res.data;
 }
 
-// Function to get recruiter request status
 export async function getRecruiterRequestStatus(token: string) {
   const response = await fetch(`${API_BASE_URL}/recruiter/requests/me`, {
     method: "GET",
     headers: { Authorization: `Bearer ${token}` },
   });
 
-    const res = await response.json().catch(() => ({}));
+  const res = await safeJson(response);
 
-    if (!response.ok) {
-    throw new Error(res?.error?.message || "Failed to fetch request status");
+  if (!response.ok) {
+    throw new Error(extractError(res, "Failed to fetch request status"));
   }
 
   return res.data;
 }
 
-// Function to get the current authentication token from localStorage
-export function getToken() {
-  return localStorage.getItem("token"); // Retrieve the token from localStorage, or return null if it doesn't exist
+/* -----------------------------
+   ADMIN API
+------------------------------*/
+export interface RecruiterRequestSummary {
+  id: string;
+  user_id: string;
+  company_name: string;
+  message: string;
+  status: "pending" | "approved" | "rejected"
 }
 
-// Function to log out the user by clearing the authentication token from localStorage
+export interface ListRecruiterRequestResponse {
+  requests: RecruiterRequestSummary[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export async function fetchRecruiterRequests(
+  token: string,
+  limit = 10,
+  offset = 0
+): Promise<ListRecruiterRequestResponse> {
+  const response = await fetch(
+    `${API_BASE_URL}/admin/recruiter-requests?limit=${limit}&offset=${offset}`,
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  const res = await safeJson(response);
+
+  if (!response.ok) {
+    throw new Error(extractError(res, "Failed to load recruiter requests"));
+  }
+
+  return res.data;
+}
+
+export async function approveRecruiterRequest(token: string, id: string) {
+  const response = await fetch(
+    `${API_BASE_URL}/admin/recruiter-requests/${id}/approve`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  const res = await safeJson(response);
+
+  if (!response.ok) {
+    throw new Error(extractError(res, "Failed to approve request"));
+  }
+
+  return res.data;
+}
+
+export async function rejectRecruiterRequest(
+  token: string,
+  id: string,
+  reason: string
+) {
+  const response = await fetch(
+    `${API_BASE_URL}/admin/recruiter-requests/${id}/reject`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ reason }),
+    }
+  );
+
+  const res = await safeJson(response);
+
+  if (!response.ok) {
+    throw new Error(extractError(res, "Failed to reject request"));
+  }
+
+  return res.data;
+} 
+
+/* -----------------------------
+   AUTH HELPERS
+------------------------------*/
+
+export function getToken() {
+  return localStorage.getItem("token");
+}
+
 export function logout() {
-  localStorage.removeItem("token"); // Remove the token from localStorage to log out the user
+  localStorage.removeItem("token");
 }
