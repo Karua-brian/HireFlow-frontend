@@ -58,7 +58,7 @@ export async function login(email: string, password: string) {
     throw new Error("No token returned from backend");
   }
 
-  localStorage.setItem("user", JSON.stringify(res.user));
+  localStorage.setItem("token", token);
   return res.data;
 }
 
