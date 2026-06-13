@@ -22,8 +22,8 @@ export default function LoginPage() {
     atob(result.access_token.split(".")[1])
   );
 
-  if (payload.role === "/admin/recruiter-requests") {
-    router.push("/admin");
+  if (payload.role === "admin") {
+    router.push("/admin/recruiter-requests");
   } else if (payload.role === "recruiter") {
     router.push("/jobs/create");
   } else {
