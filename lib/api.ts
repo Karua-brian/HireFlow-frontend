@@ -289,7 +289,7 @@ export interface Notification {
 
 export async function getNotifications(token: string) {
   const response = await fetch(
-    `${API_BASE_URL}/notifications`,
+    `${API_BASE_URL}/notifications/me`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
