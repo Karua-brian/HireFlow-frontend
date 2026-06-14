@@ -18,7 +18,14 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-  const result = await loginUser(email, password);
+  try {
+    const result = await loginUser(email, password);
+
+    if (!result || result.error) {
+      setError(result?.error || "Login failed");
+      setLoading(false);
+      return;
+    }
    
   const role = result.user.role
 
@@ -29,7 +36,12 @@ export default function LoginPage() {
   } else {
     router.push("/jobs");
   }
-}; 
+  } catch (err: any) {
+    setError(err?.message || "Something went wrong")
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 px-4">
