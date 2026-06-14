@@ -10,13 +10,23 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-  const result = await loginUser(email, password);
+  try { 
+    await loginUser(email, password);
+    setSuccess(true);
+    setTimeout(() => {}, 2000)
+    } catch (err) { // If an error occurs during registration, set the error state to display the error message
+      setError(err instanceof Error ? err.message : "An error occurred"); // Check if the error is an instance of Error and use its message, otherwise use a generic error message
+    } finally { // Finally, set loading state back to false regardless of success or failure
+      
+  const result = await loginUser(email, password);    
 
   const role = result.user.role
 
@@ -27,7 +37,7 @@ export default function LoginPage() {
   } else {
     router.push("/jobs");
   }
-};
+}; 
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 px-4">
@@ -105,4 +115,5 @@ export default function LoginPage() {
       </div>
     </div>
   );
+  }
 }

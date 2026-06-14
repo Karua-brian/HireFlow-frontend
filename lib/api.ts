@@ -37,7 +37,7 @@ export async function register(email: string, password: string) {
     throw new Error(extractError(res, "Registration failed"));
   }
 
-  return res;
+  return res.data;
 }
 
 export async function login(email: string, password: string) {
