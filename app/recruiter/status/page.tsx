@@ -20,28 +20,42 @@ export default function RecruiterStatusPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const token = getToken();
-        if (!token) {
-          setError("You must be logged in to view your request status");
-          return;
-        }
+  const fetchStatus = async () => {
+    try {
+      const token = getToken();
 
-        const data: StatusResponse = await getRecruiterRequestStatus(token);
-        setStatus(data.status);
-        if (data.reason) {
-          setReason(data.reason);
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
+      if (!token) {
+        setError("You must be logged in to view your request status");
+        return;
       }
-    };
 
-    fetchStatus();
-  }, [router]);
+      const data: StatusResponse = await getRecruiterRequestStatus(token);
+
+      setStatus(data.status);
+
+      if (data.reason) {
+        setReason(data.reason);
+      }
+
+      // 👇 AUTO ROUTING LOGIC (IMPORTANT)
+      if (data.status === "approved") {
+        router.push("/jobs/create");
+        return;
+      }
+
+      if (data.status === "rejected") {
+        router.push("/jobs");
+        return;
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchStatus();
+}, []);
 
   if (loading) {
     return (
