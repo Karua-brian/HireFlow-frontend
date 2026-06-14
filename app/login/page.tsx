@@ -18,16 +18,8 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-  try { 
-    await loginUser(email, password);
-    setSuccess(true);
-    setTimeout(() => {}, 2000)
-    } catch (err) { // If an error occurs during registration, set the error state to display the error message
-      setError(err instanceof Error ? err.message : "An error occurred"); // Check if the error is an instance of Error and use its message, otherwise use a generic error message
-    } finally { // Finally, set loading state back to false regardless of success or failure
-      
-  const result = await loginUser(email, password);    
-
+  const result = await loginUser(email, password);
+   
   const role = result.user.role
 
   if (role === "admin") {
@@ -47,9 +39,15 @@ export default function LoginPage() {
             Sign In to Your Account
           </h1>
 
-          {error && (
+          {success && ( // If registration is successful, show a success message
+            <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-lg">
+              Login successful! Redirecting to jobs...
+            </div>
+          )}
+
+          {error && ( // If there is an error, show the error message
             <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg">
-              {error}
+              {error} 
             </div>
           )}
 
@@ -115,5 +113,5 @@ export default function LoginPage() {
       </div>
     </div>
   );
-  }
 }
+
