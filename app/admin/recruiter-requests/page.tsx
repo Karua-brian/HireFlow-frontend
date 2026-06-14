@@ -9,6 +9,7 @@ import {
   getToken,
   RecruiterRequestSummary,
 } from "@/lib/api";
+import NotificationBell from "@/app/components/NotificationBell";
 
 export default function AdminRecruiterRequestsPage() {
   const router = useRouter();
@@ -16,7 +17,6 @@ export default function AdminRecruiterRequestsPage() {
   const [requests, setRequests] = useState<RecruiterRequestSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const [processingId, setProcessingId] = useState<string | null>(null);
 
   const load = async () => {
@@ -53,8 +53,6 @@ export default function AdminRecruiterRequestsPage() {
           r.id === id ? { ...r, status: "approved" } : r
         )
       );
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Error");
     } finally {
       setProcessingId(null);
     }
@@ -76,8 +74,6 @@ export default function AdminRecruiterRequestsPage() {
           r.id === id ? { ...r, status: "rejected" } : r
         )
       );
-    } catch (e) {
-      alert(e instanceof Error ? e.message : "Error");
     } finally {
       setProcessingId(null);
     }
@@ -85,59 +81,115 @@ export default function AdminRecruiterRequestsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-600 dark:text-gray-300">
-        Loading admin requests...
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-300">
+        Loading recruiter requests...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 px-6 py-10">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-          Recruiter Requests (Admin)
-        </h1>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* HEADER (same as JobsPage) */}
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+          <h1
+            onClick={() => router.push("/admin/recruiter-requests")}
+            className="text-2xl font-bold text-blue-600 dark:text-blue-400 cursor-pointer"
+          >
+            HireFlow Admin
+          </h1>
 
+          <div className="flex items-center gap-4">
+            <NotificationBell />
+
+            <button
+              onClick={() => {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+              }}
+              className="px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium transition-colors"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-6 py-8">
+        {/* TITLE SECTION */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Recruiter Requests
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Approve or reject recruiter applications
+          </p>
+        </div>
+
+        {/* ERROR */}
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg">
             {error}
           </div>
         )}
 
-        <div className="space-y-4">
+        {/* EMPTY STATE */}
+        {!loading && requests.length === 0 && (
+          <div className="text-center py-12">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              No recruiter requests
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              Everything is up to date
+            </p>
+          </div>
+        )}
+
+        {/* REQUEST GRID (same structure vibe as JobsPage cards) */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {requests.map((req) => (
             <div
               key={req.id}
-              className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex justify-between items-center"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
             >
-              <div>
-                <p className="font-semibold text-gray-900 dark:text-white">
-                  {req.company_name}
-                </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {req.message}
-                </p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                {req.company_name}
+              </h3>
 
-                <span
-                  className={`text-xs mt-2 inline-block px-2 py-1 rounded ${
-                    req.status === "pending"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : req.status === "approved"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+                {req.message}
+              </p>
+
+              {/* STATUS BADGE */}
+              <span
+                className={`text-xs inline-block px-2 py-1 rounded mb-4 ${
+                  req.status === "pending"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : req.status === "approved"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {req.status}
+              </span>
+
+              {/* ACTIONS */}
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  onClick={() =>
+                    router.push(`/admin/recruiter-requests/${req.id}`)
+                  }
+                  className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                 >
-                  {req.status}
-                </span>
-              </div>
+                  View Details →
+                </button>
 
-              <div className="flex gap-2">
                 {req.status === "pending" && (
-                  <>
+                  <div className="flex gap-2">
                     <button
                       disabled={processingId === req.id}
                       onClick={() => approve(req.id)}
-                      className="px-3 py-1 bg-green-600 text-white rounded"
+                      className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
                     >
                       Approve
                     </button>
@@ -145,26 +197,17 @@ export default function AdminRecruiterRequestsPage() {
                     <button
                       disabled={processingId === req.id}
                       onClick={() => reject(req.id)}
-                      className="px-3 py-1 bg-red-600 text-white rounded"
+                      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
                     >
                       Reject
                     </button>
-                  </>
+                  </div>
                 )}
-
-                <button
-                  onClick={() =>
-                    router.push(`/admin/recruiter-requests/${req.id}`)
-                  }
-                  className="px-3 py-1 bg-gray-600 text-white rounded"
-                >
-                  View
-                </button>
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </main>
     </div>
   );
 }

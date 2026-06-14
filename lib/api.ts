@@ -96,6 +96,36 @@ export async function applyToJob(token: string, jobId: string) {
   return res.data;
 }
 
+export async function createJob(
+  token: string,
+  payload: {
+    title: string;
+    description: string;
+    company: string;
+    location: string;
+    salary: string;
+  }
+) {
+  const response = await fetch(`${API_BASE_URL}/jobs`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const res = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      res?.error?.message || "Failed to create job"
+    );
+  }
+
+  return res.data;
+}
+
 /* -----------------------------
    RECRUITER REQUEST FLOW
 ------------------------------*/
@@ -247,7 +277,86 @@ export function logout() {
   localStorage.removeItem("token");
 }
 
-// -----------------------------------
+export interface Notification {
+  id:           string;
+  type:         string;
+  title:        string;
+  message:      string;
+  link:         string;
+  is_read:      boolean;
+  created_at:   string;
+}
+
+export async function getNotifications(token: string) {
+  const response = await fetch(
+    `${API_BASE_URL}/notifications/me`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const res = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      res?.error?.message ||
+      "Failed to fetch notifications"
+    );
+  }
+
+  return res.data?.notifications || [];
+}
+
+export async function getUnreadNotificationCount(token: string) {
+  const response = await fetch(
+    `${API_BASE_URL}/notifications/unread-count`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const res = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      res?.error?.message || "Failed to fetch notification count"
+    );
+  }
+
+  return res.data.count;
+}
+
+export async function markNotificationRead(
+  token: string,
+  notificationId: string
+) {
+  const response = await fetch(
+    `${API_BASE_URL}/notifications/${notificationId}/read`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const res = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      res?.error?.message ||
+      "Failed to mark notification as read"
+    );
+  }
+
+  return res.data;
+}
+
+/* -----------------------------------
 export function getCurrentUser() {
   const user = localStorage.getItem("user");
 
@@ -263,3 +372,4 @@ export function isAdmin() {
 export function isRecruiter() {
   return getCurrentUser()?.role === "recruiter";
 }
+*/

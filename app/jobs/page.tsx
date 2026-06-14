@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import NotificationBell from '../components/NotificationBell';
 
 interface Job {
   id: string;
@@ -48,20 +49,28 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900" >
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">HireFlow</h1>
+       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+       <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400" 
+       onClick={() => {window.location.href = "/jobs"}}>
+        HireFlow
+       </h1>
+
+       <div className="flex items-center gap-4">
+        <NotificationBell />
+
           <button
-            onClick={() => {
-              localStorage.removeItem('token'); // Remove the authentication token from localStorage to log out the user
-              window.location.href = '/login'; // Redirect to the login page after logging out
-            }}
-            className="px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium transition-colors"
-          >
-            Logout
-          </button>
+           onClick={() => {
+           localStorage.removeItem("token");
+           window.location.href = "/login";
+          }}
+             className="px-4 py-2 text-red-600"    
+         >
+         Logout
+        </button>
+        </div>
         </div>
       </header>
 
