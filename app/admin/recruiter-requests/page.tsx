@@ -43,6 +43,7 @@ export default function AdminRecruiterRequestsPage() {
   const approve = async (id: string) => {
     try {
       setProcessingId(id);
+
       const token = getToken();
       if (!token) return;
 
@@ -53,6 +54,10 @@ export default function AdminRecruiterRequestsPage() {
           r.id === id ? { ...r, status: "approved" } : r
         )
       );
+
+      // UX: go to detail page after approval
+      router.push(`/admin/recruiter-requests/${id}`);
+
     } finally {
       setProcessingId(null);
     }
@@ -64,6 +69,7 @@ export default function AdminRecruiterRequestsPage() {
 
     try {
       setProcessingId(id);
+
       const token = getToken();
       if (!token) return;
 
@@ -74,6 +80,10 @@ export default function AdminRecruiterRequestsPage() {
           r.id === id ? { ...r, status: "rejected" } : r
         )
       );
+
+      // UX: go to detail page after rejection
+      router.push(`/admin/recruiter-requests/${id}`);
+
     } finally {
       setProcessingId(null);
     }
@@ -89,7 +99,8 @@ export default function AdminRecruiterRequestsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* HEADER (same as JobsPage) */}
+
+      {/* HEADER */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <h1
@@ -115,10 +126,11 @@ export default function AdminRecruiterRequestsPage() {
         </div>
       </header>
 
+      {/* MAIN */}
       <main className="max-w-6xl mx-auto px-6 py-8">
-        {/* TITLE SECTION */}
+
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
             Recruiter Requests
           </h2>
           <p className="text-gray-600 dark:text-gray-400">
@@ -126,14 +138,12 @@ export default function AdminRecruiterRequestsPage() {
           </p>
         </div>
 
-        {/* ERROR */}
         {error && (
           <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg">
             {error}
           </div>
         )}
 
-        {/* EMPTY STATE */}
         {!loading && requests.length === 0 && (
           <div className="text-center py-12">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -145,24 +155,23 @@ export default function AdminRecruiterRequestsPage() {
           </div>
         )}
 
-        {/* REQUEST GRID (same structure vibe as JobsPage cards) */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {requests.map((req) => (
             <div
               key={req.id}
               className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {req.company_name}
               </h3>
 
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-3">
                 {req.message}
               </p>
 
-              {/* STATUS BADGE */}
+              {/* STATUS */}
               <span
-                className={`text-xs inline-block px-2 py-1 rounded mb-4 ${
+                className={`text-xs inline-block px-2 py-1 rounded mt-4 ${
                   req.status === "pending"
                     ? "bg-yellow-100 text-yellow-700"
                     : req.status === "approved"
@@ -174,14 +183,15 @@ export default function AdminRecruiterRequestsPage() {
               </span>
 
               {/* ACTIONS */}
-              <div className="flex justify-between items-center mt-4">
+              <div className="flex justify-between items-center mt-6">
+
                 <button
                   onClick={() =>
                     router.push(`/admin/recruiter-requests/${req.id}`)
                   }
-                  className="text-sm text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                  className="text-sm text-blue-600 hover:underline"
                 >
-                  View Details →
+                  View details →
                 </button>
 
                 {req.status === "pending" && (
@@ -203,6 +213,7 @@ export default function AdminRecruiterRequestsPage() {
                     </button>
                   </div>
                 )}
+
               </div>
             </div>
           ))}
