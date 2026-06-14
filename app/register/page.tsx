@@ -27,7 +27,7 @@ export default function RegisterPage() {
       
       setTimeout(() => {
         router.push("/login"); // Redirect to login page after a short delay
-      }, 2000);
+      }, 1000);
     } catch (err) { // If an error occurs during registration, set the error state to display the error message
       setError(err instanceof Error ? err.message : "An error occurred"); // Check if the error is an instance of Error and use its message, otherwise use a generic error message
     } finally { // Finally, set loading state back to false regardless of success or failure

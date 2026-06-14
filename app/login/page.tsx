@@ -26,16 +26,17 @@ export default function LoginPage() {
       setLoading(false);
       return;
     }
-   
-  const role = result.user.role
+  setTimeout(() => { 
+    const role = result.user.role
 
-  if (role === "admin") {
-    router.push("/admin/recruiter-requests");
-  } else if (role === "recruiter") {
-    router.push("/jobs/create");
-  } else {
-    router.push("/jobs");
-  }
+    if (role === "admin") {
+      router.push("/admin/recruiter-requests");
+    } else if (role === "recruiter") {
+      router.push("/jobs/create");
+    } else {
+      router.push("/jobs");
+    }
+  }, 1000);
   } catch (err: any) {
     setError(err?.message || "Something went wrong")
   } finally {
