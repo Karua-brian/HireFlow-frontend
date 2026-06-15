@@ -37,7 +37,7 @@ export default function RecruiterStatusPage() {
         setReason(data.reason);
       }
 
-      // 👇 AUTO ROUTING LOGIC (IMPORTANT)
+      /* 👇 AUTO ROUTING LOGIC (IMPORTANT)
       if (data.status === "approved") {
         router.push("/jobs/create");
         return;
@@ -47,6 +47,8 @@ export default function RecruiterStatusPage() {
         router.push("/jobs");
         return;
       }
+        */
+       
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -161,10 +163,10 @@ export default function RecruiterStatusPage() {
                   recruiter profile.
                 </p>
                 <button
-                  onClick={() => router.push("/jobs")}
+                  onClick={() => router.push("/jobs/create")}
                   className="w-full py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-200 dark:focus:ring-green-800 transition-colors font-medium"
                 >
-                  View Jobs
+                  Post Jobs
                 </button>
               </div>
             </div>
