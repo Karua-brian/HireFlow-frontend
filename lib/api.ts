@@ -101,9 +101,9 @@ export async function createJob(
   payload: {
     title: string;
     description: string;
-    company: string;
+    company_name: string;
     location: string;
-    salary: string;
+    salary_range: string;
   }
 ) {
   const response = await fetch(`${API_BASE_URL}/jobs`, {

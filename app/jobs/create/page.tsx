@@ -10,9 +10,9 @@ export default function CreateJobPage() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [company, setCompany] = useState("");
+  const [company_name, setCompany] = useState("");
   const [location, setLocation] = useState("");
-  const [salary, setSalary] = useState("");
+  const [salary_range, setSalary] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -35,9 +35,9 @@ export default function CreateJobPage() {
       await createJob(token, {
         title,
         description,
-        company,
+        company_name,
         location,
-        salary,
+        salary_range,
       });
 
       setSuccess(true);
@@ -105,7 +105,7 @@ export default function CreateJobPage() {
 
           <input
             placeholder="Company"
-            value={company}
+            value={company_name}
             onChange={(e) => setCompany(e.target.value)}
             className="w-full p-3 border rounded"
             required
@@ -121,7 +121,7 @@ export default function CreateJobPage() {
 
           <input
             placeholder="Salary"
-            value={salary}
+            value={salary_range}
             onChange={(e) => setSalary(e.target.value)}
             className="w-full p-3 border rounded"
           />
