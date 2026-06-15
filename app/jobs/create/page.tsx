@@ -43,7 +43,7 @@ export default function CreateJobPage() {
       setSuccess(true);
 
       setTimeout(() => {
-        window.location.href = "/jobs";
+        router.push("/jobs?refresh=true");
       }, 1500);
     } catch (err) {
       setError(

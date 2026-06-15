@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import NotificationBell from '../components/NotificationBell';
+import { useSearchParams } from 'next/navigation';
 
 interface Job {
   id: string;
@@ -22,7 +23,7 @@ export default function JobsPage() {
 
   useEffect(() => {
     fetchJobs();
-  }, []);
+  }, [useSearchParams]);
 
   useEffect(() => {
     const filtered = jobs.filter(
