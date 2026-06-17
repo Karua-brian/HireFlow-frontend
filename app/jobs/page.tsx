@@ -51,6 +51,7 @@ export default function JobsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900" >
+
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -64,8 +65,7 @@ export default function JobsPage() {
 
           <button
            onClick={() => {
-           localStorage.removeItem("token");
-           window.location.href = "/login";
+           window.location.href = "/notifications";
           }}
              className="px-4 py-2 text-red-600"    
          >
@@ -92,6 +92,7 @@ export default function JobsPage() {
             </svg>
           </div>
         </div>
+
          {/* Recruiter CTA */}
         <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -135,7 +136,7 @@ export default function JobsPage() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       {job.title}
                     </h3>
-                    <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">{job.company}</p>
+                    <p className="text-sm text-gray-900 dark:text-white font-medium">{job.company}</p>
                   </div>
                 </div>
 

@@ -48,7 +48,7 @@ export default function RecruiterStatusPage() {
         return;
       }
         */
-       
+
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
