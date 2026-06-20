@@ -20,11 +20,10 @@ export default function JobsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     fetchJobs();
-  }, [searchParams]);
+  }, [useSearchParams]);
 
   useEffect(() => {
     const filtered = jobs.filter(
