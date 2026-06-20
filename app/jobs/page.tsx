@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import NotificationBell from '../components/NotificationBell';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation'; // search jobs
 
 interface Job {
   id: string;
