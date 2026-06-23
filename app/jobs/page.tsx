@@ -64,13 +64,14 @@ export default function JobsPage() {
         <NotificationBell />
 
           <button
-           onClick={() => {
-           window.location.href = "/notifications";
-          }}
-             className="px-4 py-2 text-red-600"    
-         >
-         Logout
-        </button>
+              onClick={() => {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+              }}
+              className="px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium transition-colors"
+            >
+              Logout
+            </button>
         </div>
         </div>
       </header>
