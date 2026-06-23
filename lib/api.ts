@@ -278,7 +278,7 @@ export function logout() {
 }
 
 export interface Notification {
-  id:           string;
+  id   :       string;
   type:         string;
   title:        string;
   message:      string;
@@ -330,12 +330,12 @@ export async function getUnreadNotificationCount(token: string) {
   return res.data.count;
 }
 
-export async function markNotificationRead(
+
+export async function markAllNotificationRead(
   token: string,
-  notificationId: string
 ) {
   const response = await fetch(
-    `${API_BASE_URL}/notifications/${notificationId}/read`,
+    `${API_BASE_URL}/notifications/read-all`,
     {
       method: "PATCH",
       headers: {

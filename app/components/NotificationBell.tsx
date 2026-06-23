@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import {
   getNotifications,
-  markNotificationRead,
+  markAllNotificationRead,
   getToken,
   Notification,
 } from "@/lib/api";
@@ -45,41 +45,33 @@ export default function NotificationBell() {
     }
   }
 
+  const handleOpenBell = async () => {
+  setOpen(!open);
 
-  const handleRead = async (notification: Notification) => {
-    try {
-      const token = getToken();
-      if (!token) return;
+  try {
+    const token = getToken();
+    if (!token) return;
 
-      if (!notification.is_read) {
-        await markNotificationRead(token, notification.id);
-        await loadNotifications();
+    await markAllNotificationRead(token);
 
-        setNotifications(prev => 
-          prev.map(n => 
-            n.id === notification.id
-            ? { ...n, is_read: true }
-            :n
-          )
-        );
-      }
-      router.push("/notifications");
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    setNotifications(prev =>
+      prev.map(n => ({
+        ...n,
+        is_read: true,
+      }))
+    );
+
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   return (
     <div className="relative">
 
       {/* TOGGLE BUTTON */}
       <button
-        onClick={() => {
-          setOpen(!open);
-          if (!open) {
-            loadNotifications();
-          }
-        }}
+      onClick={handleOpenBell}
          className="relative text-xl"
       >
         🔔
@@ -112,7 +104,7 @@ export default function NotificationBell() {
             {notifications.map(notification => (
               <div
                 key={notification.id}
-                onClick={() => handleRead(notification)}
+                onClick={() => handleOpenBell}
                 className={`p-4 border-b cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${
                   !notification.is_read
                     ? "bg-blue-50 dark:bg-blue-900/20"

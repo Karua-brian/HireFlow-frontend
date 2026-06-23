@@ -101,6 +101,7 @@ export default function LoginPage() {
                 required
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors"
                 placeholder="••••••••"
+                
               />
             </div>
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
 getNotifications,
-markNotificationRead,
+markAllNotificationRead,
 getToken,
 Notification,
 } from "@/lib/api";
@@ -62,7 +62,7 @@ if (!token) return;
 
 
   if (!notification.is_read) {
-    await markNotificationRead(token, notification.id);
+    await markAllNotificationRead(token);
     await loadNotifications();
 
     setNotifications((prev) =>
