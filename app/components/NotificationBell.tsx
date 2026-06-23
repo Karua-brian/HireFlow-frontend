@@ -26,7 +26,7 @@ export default function NotificationBell() {
       if (!token) return;
 
       const data = await getNotifications(token);
-      setNotifications(data);
+      setNotifications(data.notifications || []);
     } catch (err) {
       console.error(err);
     }
@@ -34,18 +34,23 @@ export default function NotificationBell() {
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
-  const handleRead = async (id: string) => {
+  const handleRead = async (notification: Notification) => {
     try {
       const token = getToken();
       if (!token) return;
 
-      await markNotificationRead(token, id);
+      if (!notification.is_read) {
+        await markNotificationRead(token, notification.id);
 
-      setNotifications(prev =>
-        prev.map(n =>
-          n.id === id ? { ...n, is_read: true } : n
-        )
-      );
+        setNotifications(prev => 
+          prev.map(n => 
+            n.id === notification.id
+            ? { ...n, is_read: true }
+            :n
+          )
+        );
+      }
+      router.push("/notifications");
     } catch (err) {
       console.error(err);
     }
@@ -89,7 +94,7 @@ export default function NotificationBell() {
             {notifications.map(notification => (
               <div
                 key={notification.id}
-                onClick={() => handleRead(notification.id)}
+                onClick={() => handleRead(notification)}
                 className={`p-4 border-b cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${
                   !notification.is_read
                     ? "bg-blue-50 dark:bg-blue-900/20"
