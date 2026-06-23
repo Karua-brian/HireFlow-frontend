@@ -306,7 +306,7 @@ export async function getNotifications(token: string) {
     );
   }
 
-  return res.data?.notifications || [];
+  return res.data?.notifications;
 }
 
 export async function getUnreadNotificationCount(token: string) {

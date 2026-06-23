@@ -21,8 +21,16 @@ export default function NotificationBell() {
 
     const interval = setInterval(() => {
       loadNotifications();
-    }, 30000);
+    }, 10000);
     return () => clearInterval(interval)
+  }, []);
+
+  useEffect(() => {
+  const onFocus = () => loadNotifications();
+
+  window.addEventListener("focus", onFocus);
+
+  return () => window.removeEventListener("focus", onFocus);
   }, []);
 
   async function loadNotifications() {
@@ -31,7 +39,7 @@ export default function NotificationBell() {
       if (!token) return;
 
       const data = await getNotifications(token);
-      setNotifications(data.data.notifications || []);
+      setNotifications(data || []);
     } catch (err) {
       console.error(err);
     }
@@ -45,6 +53,7 @@ export default function NotificationBell() {
 
       if (!notification.is_read) {
         await markNotificationRead(token, notification.id);
+        await loadNotifications();
 
         setNotifications(prev => 
           prev.map(n => 

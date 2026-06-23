@@ -18,34 +18,42 @@ useEffect(() => {
 
     const interval = setInterval(() => {
       loadNotifications();
-    }, 30000);
+    }, 10000);
     return () => clearInterval(interval)
   }, []);
 
-const loadNotifications = async () => {
-try {
-setLoading(true);
-  const token = getToken();
-  if (!token) {
-    setError("Please login first");
-    return;
+useEffect(() => {
+  const onFocus = () => loadNotifications();
+
+  window.addEventListener("focus", onFocus);
+
+  return () => window.removeEventListener("focus", onFocus);
+}, []);  
+
+  async function loadNotifications() {
+    try {
+      setLoading(true);
+      const token = getToken();
+      if (!token) {
+        setError("Please login first");
+        return;
+      }
+
+      const data = await getNotifications(token);
+
+      setNotifications(data || []);
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to load notifications"
+      );
+    } finally {
+      setLoading(false);
+    }
+
   }
-
-  const data = await getNotifications(token);
-
-  setNotifications(data.data.notifications || []);
-} catch (err) {
-  console.error(err);
-  setError(
-    err instanceof Error
-      ? err.message
-      : "Failed to load notifications"
-  );
-} finally {
-  setLoading(false);
-}
-
-};
 
 const handleRead = async (notification: Notification) => {
 try {
@@ -55,6 +63,7 @@ if (!token) return;
 
   if (!notification.is_read) {
     await markNotificationRead(token, notification.id);
+    await loadNotifications();
 
     setNotifications((prev) =>
       prev.map((n) =>
