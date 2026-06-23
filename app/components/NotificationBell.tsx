@@ -64,6 +64,8 @@ export default function NotificationBell() {
   } catch (err) {
     console.error(err);
   }
+
+  router.push("/notifications")
 };
 
   return (

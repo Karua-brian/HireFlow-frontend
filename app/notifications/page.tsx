@@ -66,12 +66,11 @@ if (!token) return;
     await loadNotifications();
 
     setNotifications((prev) =>
-      prev.map((n) =>
-        n.id === notification.id
-          ? { ...n, is_read: true }
-          : n
-      )
-    );
+      prev.map(n => ({
+        ...n,
+        is_read: true,
+      }))
+    );  
   }
 
   if (notification.link) {
