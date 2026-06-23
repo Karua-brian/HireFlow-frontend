@@ -37,7 +37,6 @@ export default function NotificationBell() {
     }
   }
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const handleRead = async (notification: Notification) => {
     try {
@@ -76,9 +75,9 @@ export default function NotificationBell() {
       >
         🔔
 
-        {unreadCount > 0 && (
+        {notifications.filter(n => !n.is_read).length > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs px-2">
-            {unreadCount}
+            {notifications.filter(n => !n.is_read).length}
           </span>
         )}
       </button>

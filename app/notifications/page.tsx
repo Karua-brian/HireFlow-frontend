@@ -14,8 +14,13 @@ const [loading, setLoading] = useState(true);
 const [error, setError] = useState("");
 
 useEffect(() => {
-  loadNotifications();
-}, []);
+    loadNotifications();
+
+    const interval = setInterval(() => {
+      loadNotifications();
+    }, 30000);
+    return () => clearInterval(interval)
+  }, []);
 
 const loadNotifications = async () => {
 try {
@@ -28,7 +33,7 @@ setLoading(true);
 
   const data = await getNotifications(token);
 
-  setNotifications(data.notifications || []);
+  setNotifications(data.data.notifications || []);
 } catch (err) {
   console.error(err);
   setError(
@@ -70,9 +75,6 @@ if (!token) return;
 
 };
 
-const unreadCount = notifications.filter(
-(n) => !n.is_read
-).length;
 
 if (loading) {
 return ( <div className="min-h-screen flex justify-center items-center"> <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div> </div>
@@ -90,7 +92,9 @@ return (
       </h1>
 
       <span className="text-sm text-gray-600 dark:text-gray-400">
-        {unreadCount} unread
+        {notifications.filter(
+            (n) => !n.is_read
+          ).length} unread
       </span>
 
     </div>
