@@ -56,11 +56,8 @@ export default function NotificationBell() {
 
       {/* TOGGLE BUTTON */}
       <button
-        onClick={() => {
-          setOpen(!open);
-          router.push("/notifications");
-        }}
-        className="relative text-xl"
+        onClick={() => setOpen(!open)}
+         className="relative text-xl"
       >
         🔔
 
