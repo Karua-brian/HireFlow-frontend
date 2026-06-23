@@ -18,19 +18,24 @@ export default function NotificationBell() {
 
   useEffect(() => {
     loadNotifications();
+
+    const interval = setInterval(() => {
+      loadNotifications();
+    }, 30000);
+    return () => clearInterval(interval)
   }, []);
 
-  const loadNotifications = async () => {
+  async function loadNotifications() {
     try {
       const token = getToken();
       if (!token) return;
 
       const data = await getNotifications(token);
-      setNotifications(data.notifications || []);
+      setNotifications(data.data.notifications || []);
     } catch (err) {
       console.error(err);
     }
-  };
+  }
 
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
@@ -61,7 +66,12 @@ export default function NotificationBell() {
 
       {/* TOGGLE BUTTON */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          setOpen(!open);
+          if (!open) {
+            loadNotifications();
+          }
+        }}
          className="relative text-xl"
       >
         🔔
